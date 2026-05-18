@@ -473,7 +473,7 @@ body.dark-theme .container {
   border: 3px solid var(--color-border);
   border-top-color: var(--color-primary);
 
-  animation: spin 1s linear infinite;
+  /* animation: spin 1s linear infinite; */
 }
 
 /* ERROR */
