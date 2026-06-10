@@ -2,6 +2,18 @@ import "./style.css";
 
 const themeToggle = document.querySelector<HTMLButtonElement>(".theme-toggle");
 const promptBtn = document.querySelector<HTMLButtonElement>(".prompt-btn");
+const promptForm = document.querySelector<HTMLFormElement>(".prompt-form");
+const modelSelect = document.getElementById(
+  "model-select",
+) as HTMLSelectElement;
+const countSelect = document.getElementById(
+  "count-select",
+) as HTMLSelectElement;
+const ratioSelect = document.getElementById(
+  "ratio-select",
+) as HTMLSelectElement;
+const gridGallery = document.querySelector(".gallery-grid") as HTMLDivElement;
+
 const promptInput =
   document.querySelector<HTMLTextAreaElement>(".prompt-input");
 
@@ -49,6 +61,45 @@ const toggleTheme = () => {
   }
 };
 
+
+// Create placeholder cards with loading spinners
+const createImageCards = (
+  selectedModel: string,
+  imageCount: number,
+  aspectRatio: string,
+  promptText: string,
+) => {
+
+  gridGallery.innerHTML=""
+
+  for (let i = 0; i < imageCount; i++) {
+    gridGallery.innerHTML += `<div class="img-card loading" id="img-card-${i}" style="aspect-ratio: ${aspectRatio}">
+            <div class="status-container">
+              <div class="spinner"></div>
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <p class="status-text">Generating...</p>
+            </div>
+            <img src="" alt="" class="result-img">
+            </div>`;
+    
+  }
+
+};
+
+// handle form submission
+const handleFormSubmit = (e: SubmitEvent) => {
+  e.preventDefault();
+
+  const selectedModel: string = modelSelect.value;
+  const imageCount: number = parseInt(countSelect.value) || 1;
+  const aspectRatio: string = ratioSelect.value || "1/1";
+
+  if (!promptInput) return;
+
+  const promptText: string = promptInput?.value.trim();
+  createImageCards(selectedModel, imageCount, aspectRatio, promptText);
+};
+
 // Fill prompt input with random example
 promptBtn?.addEventListener("click", () => {
   const prompt: string =
@@ -58,4 +109,5 @@ promptBtn?.addEventListener("click", () => {
   promptInput!.focus();
 });
 
+promptForm?.addEventListener("submit", handleFormSubmit);
 themeToggle?.addEventListener("click", toggleTheme);
