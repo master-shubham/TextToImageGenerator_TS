@@ -116,12 +116,13 @@ body.dark-theme .container {
 
   flex-shrink: 0;
 
-  color: #fff;
+  color: var(--color-gradient);
   font-size: 1.35rem;
 
+  border: 2px solid var(--color-accent);
   border-radius: 15px;
 
-  background: var(--color-gradient);
+  /* background: black; */
 }
 
 .header .logo-wrapper h1 {
@@ -321,6 +322,11 @@ body.dark-theme .container {
   background: var(--color-gradient);
 }
 
+.prompt-actions .generate-btn:disabled{
+  opacity: 0.6;
+  pointer-events: none;
+}
+
 .prompt-actions .generate-btn:hover {
   transform: translateY(-2px);
 
@@ -478,7 +484,7 @@ body.dark-theme .container {
   border: 3px solid var(--color-border);
   border-top-color: var(--color-primary);
 
-  /* animation: spin 1s linear infinite; */
+  animation: spin 1s linear infinite;
 }
 
 /* ERROR */

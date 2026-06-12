@@ -3,6 +3,7 @@ import { HfInference } from "@huggingface/inference";
 
 const themeToggle = document.querySelector<HTMLButtonElement>(".theme-toggle");
 const promptBtn = document.querySelector<HTMLButtonElement>(".prompt-btn");
+const generateBtn = document.querySelector<HTMLButtonElement>(".generate-btn");
 const promptForm = document.querySelector<HTMLFormElement>(".prompt-form");
 const modelSelect = document.getElementById("model-select") as HTMLSelectElement;
 const countSelect = document.getElementById("count-select") as HTMLSelectElement;
@@ -66,7 +67,8 @@ const getImageDimensions = (aspectRatio: string, baseSize = 512) => {
   if (!aspectRatio) return { width: baseSize, height: baseSize };
 
   const [width, height] = aspectRatio.split("/").map(Number);
-
+  
+  
   if (isNaN(width) || isNaN(height) || width === 0 || height === 0) {
     console.warn("Invalid aspect ratio format received. Defaulting to square.");
     return { width: baseSize, height: baseSize };
@@ -88,6 +90,13 @@ const updateCardStatus = (index: number, status: "success" | "error", data?: str
   if (!card) return;
 
   card.classList.remove("loading");
+  card.innerHTML = ` <img src="${data}" alt="" class="result-img">
+            <div class="img-overlay">
+              <a href="${data}" class="img-download-btn" download="${Date.now()}.png">
+                <i class="fa-solid fa-download"></i>
+              </a>
+            </div>
+          `;
   const statusText = card.querySelector(".status-text");
 
   if (status === "success" && data) {
@@ -106,6 +115,8 @@ const generateImages = async ({
   promptText,
 }: ImageSelect) => {
   const { width, height } = getImageDimensions(aspectRatio);
+
+  generateBtn?.setAttribute("disabled","true")
 
   const imagePromises = Array.from({ length: imageCount }, async (_, i) => {
     try {
@@ -134,8 +145,7 @@ const generateImages = async ({
     } catch (error) {
       console.error(`Track Error on Image ${i}:`, error);
 
-      const message =
-        error instanceof Error ? error.message : "Failed to generate image";
+      const message = error instanceof Error ? error.message : "Failed to generate image";
 
       updateCardStatus(i, "error", message);
 
@@ -144,6 +154,7 @@ const generateImages = async ({
   });
 
   await Promise.allSettled(imagePromises);
+  generateBtn?.removeAttribute("disabled");
 };
 
 
@@ -183,6 +194,7 @@ const handleFormSubmit = (e: SubmitEvent) => {
   if (!promptText) return alert("Please enter a valid prompt structure.");
   
   createImageCards({ selectedModel, imageCount, aspectRatio, promptText });
+  promptInput.value=""
 };
 
 // Fill prompt input with random example
